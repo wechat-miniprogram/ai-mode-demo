@@ -1,0 +1,144 @@
+.addr-card {
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-shadow: 0 6rpx 24rpx rgba(92, 58, 33, 0.08);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.addr-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.addr-icon {
+  font-size: 30rpx;
+  margin-right: 10rpx;
+}
+
+.addr-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2A1810;
+}
+
+.addr-content {
+  padding-top: 8rpx;
+}
+
+.addr-name-row {
+  display: flex;
+  align-items: baseline;
+}
+
+.addr-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2A1810;
+}
+
+.addr-phone {
+  font-size: 24rpx;
+  color: #6B5544;
+  margin-left: 18rpx;
+}
+
+.addr-detail {
+  font-size: 26rpx;
+  color: #6B5544;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.addr-actions {
+  display: flex;
+  margin-top: 20rpx;
+}
+
+.addr-btn {
+  flex: 1;
+  padding: 18rpx 0;
+  border-radius: 999rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-right: 16rpx;
+}
+
+.addr-btn:last-child {
+  margin-right: 0;
+}
+
+.addr-btn-primary {
+  background: linear-gradient(135deg, #8B5E3C 0%, #5C3A21 100%);
+  color: #FFFFFF;
+}
+
+.addr-btn-outline {
+  background: #FFF8F0;
+  color: #5C3A21;
+  border: 2rpx solid #E8D5B7;
+}
+
+.btn-hover {
+  opacity: 0.85;
+}
+
+.addr-empty {
+  padding: 20rpx 0 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.addr-empty-text {
+  font-size: 28rpx;
+  color: #2A1810;
+  margin-bottom: 6rpx;
+}
+
+.addr-empty-sub {
+  font-size: 22rpx;
+  color: #A89180;
+  margin-bottom: 20rpx;
+}
+
+.addr-empty .addr-btn {
+  width: 80%;
+}
+
+/* ========== 暗黑模式 ========== */
+@media (prefers-color-scheme: dark) {
+  .addr-card {
+    background: #1E1E1E;
+    box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.3);
+  }
+  .addr-title {
+    color: #E8E0D8;
+  }
+  .addr-name {
+    color: #E8E0D8;
+  }
+  .addr-phone {
+    color: #9E8E7E;
+  }
+  .addr-detail {
+    color: #9E8E7E;
+  }
+  .addr-btn-primary {
+    background: linear-gradient(135deg, #A07050 0%, #7A5030 100%);
+  }
+  .addr-btn-outline {
+    background: #2A2218;
+    color: #D4A574;
+    border-color: #3E3228;
+  }
+  .addr-empty-text {
+    color: #E8E0D8;
+  }
+  .addr-empty-sub {
+    color: #7A6E62;
+  }
+}

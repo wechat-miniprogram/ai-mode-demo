@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/home/home"
+  ],
+  "subPackages": [
+    {
+      "root": "skills",
+      "pages": [],
+      "independent": true
+    },
+    {
+      "root": "packageDetail",
+      "name": "detail",
+      "pages": [
+        "pages/more-drinks",
+        "pages/sku-picker",
+        "pages/address-edit"
+      ],
+      "independent": true,
+      "componentFramework": "glass-easel",
+      "renderer": "skyline"
+    }
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "darkmode": true,
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#5C3A21",
+    "navigationBarTitleText": "WeStoreCafe 点单场景",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FFF8F0"
+  },
+  "agent": {
+    "skills": [
+      {
+        "name": "drink",
+        "description": "WeStoreCafe 点单场景：查询推荐饮品、选择规格、填写收货地址、下单支付",
+        "path": "skills/drink-skill"
+      }
+    ],
+    "pageMetadata": "page-meta.json"
+  },
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "defaultContentBox": true,
+      "disableABTest": true,
+      "tagNameStyleIsolation": "legacy",
+      "enableScrollViewAutoSize": true,
+      "keyframeStyleIsolation": "legacy"
+    }
+  },
+  "requiredBackgroundModes": [],
+  "requiredPrivateInfos": ["chooseAddress"],
+  "sitemapLocation": "sitemap.json"
+}

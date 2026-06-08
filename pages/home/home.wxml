@@ -1,0 +1,22 @@
+<view class="home">
+  <view class="hero">
+    <view class="hero-title">今日想喝点什么？</view>
+    <view class="hero-sub">在对话框说出你的需求，我们为你推荐合适的饮品</view>
+  </view>
+
+  <view class="tips card">
+    <view class="tips-title">你可以这样对我说</view>
+    <view class="tip-row">· 想喝点咖啡</view>
+    <view class="tip-row">· 来杯拿铁</view>
+    <view class="tip-row">· 给我推荐几款饮品</view>
+    <view class="tip-row">· 我要一杯冰美式</view>
+  </view>
+
+  <view class="preview-btns">
+    <view class="preview-btn" hover-class="btn-hover" bind:tap="onTapMoreDrinks">预览：全部饮品</view>
+    <view class="preview-btn" hover-class="btn-hover" bind:tap="onTapSkuPicker">预览：选规格（美式）</view>
+    <view class="preview-btn" hover-class="btn-hover" bind:tap="onTapAddressEdit">预览：填地址</view>
+  </view>
+
+  <view class="brand-foot">— 温暖一杯，从一次对话开始 —</view>
+</view>

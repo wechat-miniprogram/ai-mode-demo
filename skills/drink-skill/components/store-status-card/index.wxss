@@ -1,0 +1,163 @@
+.ss-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx 24rpx;
+  box-shadow: 0 6rpx 24rpx rgba(92, 58, 33, 0.08);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ss-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ss-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2A1810;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ss-distance {
+  font-size: 22rpx;
+  color: #8B5E3C;
+  background: #FFF8F0;
+  padding: 6rpx 16rpx;
+  border-radius: 10rpx;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.ss-addr {
+  font-size: 24rpx;
+  color: #A89180;
+  margin-top: 10rpx;
+  line-height: 1.4;
+}
+
+.ss-live {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background: linear-gradient(135deg, #FFF8F0 0%, #F5EFE6 100%);
+  border-radius: 18rpx;
+  padding: 24rpx 16rpx;
+  margin-top: 22rpx;
+}
+
+.ss-live-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ss-live-divider {
+  width: 2rpx;
+  background: #E6DACB;
+  margin: 4rpx 0;
+}
+
+.ss-live-label {
+  font-size: 24rpx;
+  color: #8B5E3C;
+  line-height: 1.2;
+}
+
+.ss-live-value {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.ss-live-num {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #5C3A21;
+  line-height: 1.1;
+}
+
+.ss-live-unit {
+  font-size: 22rpx;
+  color: #8B5E3C;
+  font-weight: 400;
+  margin-left: 6rpx;
+}
+
+.ss-foot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+}
+
+.ss-update {
+  font-size: 22rpx;
+  color: #A89180;
+  flex: 1;
+  min-width: 0;
+}
+
+.ss-refresh {
+  font-size: 24rpx;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #8B5E3C 0%, #5C3A21 100%);
+  padding: 10rpx 28rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.ss-refresh-hover {
+  opacity: 0.85;
+}
+
+/* ========== 暗黑模式 ========== */
+@media (prefers-color-scheme: dark) {
+  .ss-card {
+    background: #1E1E1E;
+    box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.3);
+  }
+  .ss-title {
+    color: #E8E0D8;
+  }
+  .ss-distance {
+    color: #D4A574;
+    background: #2A2218;
+  }
+  .ss-addr {
+    color: #7A6E62;
+  }
+  .ss-live {
+    background: linear-gradient(135deg, #2A2218 0%, #1E1A14 100%);
+  }
+  .ss-live-divider {
+    background: #3E3228;
+  }
+  .ss-live-label {
+    color: #9E8E7E;
+  }
+  .ss-live-num {
+    color: #D4A574;
+  }
+  .ss-live-unit {
+    color: #9E8E7E;
+  }
+  .ss-update {
+    color: #7A6E62;
+  }
+  .ss-refresh {
+    background: linear-gradient(135deg, #A07050 0%, #7A5030 100%);
+  }
+}

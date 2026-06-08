@@ -1,0 +1,72 @@
+.home {
+  min-height: 100vh;
+  padding: 48rpx 36rpx;
+  background: linear-gradient(180deg, #FFF8F0 0%, #F5EFE6 100%);
+}
+
+.hero {
+  padding: 80rpx 24rpx 48rpx;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #2A1810;
+  letter-spacing: 2rpx;
+  margin-bottom: 20rpx;
+}
+
+.hero-sub {
+  font-size: 28rpx;
+  color: #6B5544;
+  line-height: 1.6;
+}
+
+.tips {
+  margin-top: 32rpx;
+  padding: 36rpx 32rpx;
+}
+
+.tips-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #5C3A21;
+  margin-bottom: 20rpx;
+}
+
+.tip-row {
+  font-size: 28rpx;
+  color: #6B5544;
+  line-height: 2;
+}
+
+.brand-foot {
+  margin-top: 120rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #A89180;
+  letter-spacing: 4rpx;
+}
+
+.preview-btns {
+  margin-top: 48rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-btn {
+  padding: 22rpx 0;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #8B5E3C 0%, #5C3A21 100%);
+  color: #FFFFFF;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 2rpx;
+  margin-bottom: 20rpx;
+}
+
+.btn-hover {
+  opacity: 0.85;
+}

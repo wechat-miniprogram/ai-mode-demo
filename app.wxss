@@ -1,0 +1,78 @@
+/* 全局样式 - 饮品主题 */
+page {
+  --primary-dark: #5C3A21;
+  --primary-brand: #8B5E3C;
+  --primary-accent: #E8A87C;
+  --bg-cream: #FFF8F0;
+  --bg-white: #FFFFFF;
+  --bg-soft: #F5EFE6;
+  --text-primary: #2A1810;
+  --text-secondary: #6B5544;
+  --text-white: #FFFFFF;
+  --border-color: #EDE3D4;
+  --success: #2E7D32;
+  --danger: #D32F2F;
+  --warning: #F57C00;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background-color: var(--bg-cream);
+  color: var(--text-primary);
+}
+
+/* 通用容器 */
+.container {
+  padding: 32rpx;
+}
+
+/* 卡片 */
+.card {
+  background: var(--bg-white);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-shadow: 0 6rpx 24rpx rgba(92, 58, 33, 0.06);
+}
+
+/* Flex */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* 按钮 */
+.btn-primary {
+  background: linear-gradient(135deg, #8B5E3C 0%, #5C3A21 100%);
+  color: #FFFFFF;
+  padding: 22rpx 36rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-dark);
+  padding: 18rpx 32rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  border: 2rpx solid var(--primary-brand);
+  text-align: center;
+}
+
+/* 文本 */
+.text-primary { color: var(--primary-dark); }
+.text-secondary { color: var(--text-secondary); }
+.text-accent { color: var(--primary-accent); }
+.font-bold { font-weight: 600; }
+
+/* 分割线 */
+.divider {
+  height: 2rpx;
+  background: var(--border-color);
+  margin: 20rpx 0;
+}
+
+/* 安全区 */
+.safe-area-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16rpx);
+}
