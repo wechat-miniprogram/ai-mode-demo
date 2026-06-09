@@ -8,7 +8,7 @@
       <view class="dd-price">¥{{price}}</view>
       <view class="dd-unit">起</view>
     </view>
-    <view wx:if="{{dimsLabel}}" class="dd-dims">可选规格：{{dimsLabel}}</view>
+    <view wx:if="{{dimsLabel}}" class="dd-dims" bind:tap="onTapModifySku">可选规格：{{dimsLabel}}</view>
     <view class="dd-actions">
       <view class="dd-btn" hover-class="dd-btn-hover" bind:tap="onTapOrder">
         <view class="dd-btn-text">直接下单</view>
