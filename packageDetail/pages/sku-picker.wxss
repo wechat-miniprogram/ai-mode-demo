@@ -1,13 +1,50 @@
 page {
   background-color: #FFF8F0;
   height: 100%;
+  overflow-x: hidden;
 }
 
 .sp-page {
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   background: linear-gradient(180deg, #FFF8F0 0%, #F5EFE6 100%);
+}
+
+/* ========== 左上角返回按钮 ========== */
+.nav-back {
+  position: fixed;
+  left: 24rpx;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2rpx 10rpx rgba(92, 58, 33, 0.12);
+}
+
+.nav-back-arrow {
+  width: 16rpx;
+  height: 16rpx;
+  border-left: 6rpx solid #2A1810;
+  border-bottom: 6rpx solid #2A1810;
+  transform: translateX(3rpx) rotate(45deg);
+}
+
+.nav-back-hover { opacity: 0.7; }
+
+@media (prefers-color-scheme: dark) {
+  .nav-back {
+    background: rgba(30, 30, 30, 0.92);
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.3);
+  }
+  .nav-back-arrow {
+    border-left-color: #E8E0D8;
+    border-bottom-color: #E8E0D8;
+  }
 }
 
 .sp-header {
@@ -178,6 +215,12 @@ page {
   flex-shrink: 0;
 }
 
+.sp-confirm-secondary {
+  background: #FFFFFF;
+  border: 2rpx solid #C9A88A;
+  padding: 20rpx 32rpx;
+}
+
 .btn-hover { opacity: 0.85; }
 
 .sp-confirm-text {
@@ -185,6 +228,11 @@ page {
   font-size: 28rpx;
   font-weight: 700;
   letter-spacing: 2rpx;
+}
+
+.sp-confirm-text-secondary {
+  color: #8B5E3C;
+  letter-spacing: 0;
 }
 
 /* ========== 暗黑模式 ========== */
@@ -242,5 +290,12 @@ page {
   }
   .sp-confirm {
     background: linear-gradient(135deg, #A07050 0%, #7A5030 100%);
+  }
+  .sp-confirm-secondary {
+    background: #1E1E1E;
+    border-color: #6B5038;
+  }
+  .sp-confirm-text-secondary {
+    color: #D4A574;
   }
 }

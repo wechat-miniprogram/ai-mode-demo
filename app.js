@@ -1,12 +1,38 @@
 App({
   globalData: {
     userInfo: null,
-    isLoggedIn: false
+    isLoggedIn: false,
+    // 小微 handoff 缓存：以接力页实例 pageId 为 key，存放 { path, query, payload }
+    agentHandoffs: {}
   },
 
   onLaunch() {
     console.log('[App] Launch')
+    this.registerAgentHandoff()
     this.checkLoginStatus()
+  },
+
+  // 注册小微 AI Handoff 监听（须早于 handoff 触发的 onBeforeAppRoute）
+  // 用户在小微对话中点击小程序卡片进入接力页时触发，每次进入 1 次
+  registerAgentHandoff() {
+    if (!wx.onAgentHandoff) {
+      console.warn('[App] 当前基础库不支持 wx.onAgentHandoff，请使用支持小微 handoff 的版本')
+      return
+    }
+    wx.onAgentHandoff(({ pageId, path, query, payload }) => {
+      console.log('[App] onAgentHandoff', { pageId, path, query, payload })
+      this.globalData.agentHandoffs = this.globalData.agentHandoffs || {}
+      // 按 pageId 精确投递给目标接力页；query 为 string，payload 为可选预置数据
+      this.globalData.agentHandoffs[pageId] = { path, query, payload }
+    })
+  },
+
+  // 接力页取走 handoff（取后删除，避免重复消费）
+  takeAgentHandoff(pageId) {
+    const map = this.globalData.agentHandoffs || {}
+    const handoff = map[pageId]
+    if (handoff) delete map[pageId]
+    return handoff || null
   },
 
   onShow() {
@@ -48,6 +74,8 @@ App({
   },
 
   // Mock 登录
+  // 【仅演示】以下 openid/unionid 为本地伪造，仅用于跑通 demo 流程；
+  // 生产环境必须用 wx.login 拿到的 code 换取服务端会话，切勿伪造用户标识。
   mockLogin(code) {
     const mockOpenid = `mock_${String(code).substring(0, 16)}_${Date.now()}`
     const userInfo = {
@@ -76,6 +104,7 @@ App({
     wx.setStorageSync(`address_${openid}`, null)
     wx.setStorageSync(`orders_${openid}`, [])
     wx.setStorageSync(`pending_order_${openid}`, null)
+    wx.setStorageSync(`active_order_${openid}`, null)
     wx.setStorageSync(`initialized_${openid}`, true)
 
     console.log('[App] 用户业务数据初始化完成')

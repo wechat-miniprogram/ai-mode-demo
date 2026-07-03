@@ -15,7 +15,7 @@ Component({
   },
   methods: {
     onTapBrowse() {
-      this._viewCtx.openDetailPage({ url: '/packageDetail/pages/more-drinks' })
+      this._viewCtx.openDetailPage({ url: '/pages/home/home' })
     }
   }
 })

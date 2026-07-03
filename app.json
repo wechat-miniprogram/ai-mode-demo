@@ -12,11 +12,9 @@
       "root": "packageDetail",
       "name": "detail",
       "pages": [
-        "pages/more-drinks",
         "pages/sku-picker",
-        "pages/address-edit"
+        "pages/checkout"
       ],
-      "independent": true,
       "componentFramework": "glass-easel",
       "renderer": "skyline"
     }

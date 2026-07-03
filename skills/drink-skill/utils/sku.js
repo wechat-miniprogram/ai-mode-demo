@@ -1,5 +1,6 @@
 // SKU 校验与金额计算
 const { findDrink } = require('./storage.js')
+const { genItemId } = require('./id.js')
 
 /**
  * 在选项列表里找匹配项，支持 value（精确）、label（中文）、大小写不敏感匹配
@@ -22,6 +23,9 @@ function resolveOption(options, rawVal) {
   if (opt) return opt
   return null
 }
+
+// 单选维度「用户未指定」时的统一默认值（与 sku-picker 规格页、详情卡保持一致）
+const DEFAULT_SINGLE_SPEC = { temperature: 'ice', sugar: 'normal', cupSize: 'medium' }
 
 /**
  * 校验并规范化 specs
@@ -58,10 +62,11 @@ function validateSpecs(drinkId, rawSpecs) {
       normalized[dim.key] = validValues
       if (labels.length) textParts.push(`${dim.label}:${labels.join('+')}`)
     } else {
-      if (!val) {
-        return { valid: false, error: `缺少规格：${dim.label}` }
-      }
-      const opt = resolveOption(dim.options, val)
+      // 用户/模型未指定该维度时，使用统一默认值兜底（不再报错、不依赖模型猜测）
+      const useVal = (val != null && String(val).trim())
+        ? val
+        : (DEFAULT_SINGLE_SPEC[dim.key] || (dim.options[0] && dim.options[0].value))
+      const opt = resolveOption(dim.options, useVal)
       if (!opt) {
         const allow = dim.options.map(o => `${o.value}(${o.label})`).join('、')
         return { valid: false, error: `${dim.label} 不支持 "${val}"，可选：${allow}` }
@@ -83,4 +88,31 @@ function validateSpecs(drinkId, rawSpecs) {
   }
 }
 
-module.exports = { validateSpecs }
+/**
+ * 校验规格并组装一个订单商品项（供 createOrder / addToOrder 共用）
+ * @returns { valid: boolean, error?: string, item? }
+ */
+function buildOrderItem(drinkId, rawSpecs) {
+  const drink = findDrink(drinkId)
+  if (!drink) {
+    return { valid: false, error: `未找到 drinkId=${drinkId} 的饮品` }
+  }
+  const check = validateSpecs(drinkId, rawSpecs)
+  if (!check.valid) return check
+  return {
+    valid: true,
+    item: {
+      itemId: genItemId(),
+      drinkId: drink.id,
+      drinkName: drink.name,
+      imageUrl: drink.imageUrl,
+      specs: check.normalizedSpecs,
+      specText: check.specText,
+      basePrice: check.basePrice,
+      extraPrice: check.extraPrice,
+      totalPrice: check.totalPrice
+    }
+  }
+}
+
+module.exports = { validateSpecs, buildOrderItem }

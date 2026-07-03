@@ -4,5 +4,6 @@
   "navigationBarTextStyle": "white",
   "navigationStyle": "custom",
   "backgroundColor": "#FFF8F0",
+  "darkmode": true,
   "usingComponents": {}
 }

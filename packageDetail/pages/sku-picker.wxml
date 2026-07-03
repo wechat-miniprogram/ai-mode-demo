@@ -1,4 +1,7 @@
 <view class="sp-page">
+  <view class="nav-back" style="top: {{navBackTop}}rpx; width: {{navBackSize}}rpx; height: {{navBackSize}}rpx;" hover-class="nav-back-hover" bind:tap="onTapBack">
+    <text class="nav-back-arrow"></text>
+  </view>
   <view class="sp-header" style="padding-top: {{headerPaddingTop}}rpx;">
     <image class="sp-thumb" src="{{drink.imageUrl}}" mode="aspectFill"></image>
     <view class="sp-head-info">
@@ -43,7 +46,15 @@
         <text wx:if="{{extraPrice}}" class="sp-summary-extra">（含加价 ¥{{extraPrice}}）</text>
       </view>
     </view>
-    <view class="sp-confirm" hover-class="btn-hover" bind:tap="onTapConfirm">
+    <block wx:if="{{hasActiveOrder}}">
+      <view class="sp-confirm sp-confirm-secondary" hover-class="btn-hover" bind:tap="onTapConfirm" data-mode="new">
+        <text class="sp-confirm-text sp-confirm-text-secondary">新建订单</text>
+      </view>
+      <view class="sp-confirm" hover-class="btn-hover" bind:tap="onTapConfirm" data-mode="append">
+        <text class="sp-confirm-text">加入当前订单（{{activeItemCount}}件）</text>
+      </view>
+    </block>
+    <view wx:else class="sp-confirm" hover-class="btn-hover" bind:tap="onTapConfirm" data-mode="append">
       <text class="sp-confirm-text">加入订单</text>
     </view>
   </view>

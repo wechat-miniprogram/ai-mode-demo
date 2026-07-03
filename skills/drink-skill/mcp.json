@@ -1,54 +1,16 @@
 {
   "apis": [
     {
-      "name": "getRecommendedDrinks",
-      "description": "获取推荐饮品列表（业务对象：精选饮品卡片）。\n调用前置条件：用户表达想喝饮品但未指定具体商品名（如「想喝点什么」「推荐一下」「有什么好喝的」）。\n【严禁场景】用户已说出具体商品名（如「来杯拿铁」）时，禁止调用本接口，应调用 searchDrinks 或直接 selectDrink。",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "scenario": {
-            "type": "string",
-            "description": "使用场景。仅允许以下取值：'default'（默认推荐）/ 'coffee'（咖啡类）/ 'tea'（茶饮类）/ 'warm'（暖饮）。用户未明确表达品类偏好时，留空走 default。",
-            "enum": ["default", "coffee", "tea", "warm"]
-          }
-        }
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "description": "推荐饮品列表",
-            "items": {
-              "type": "object",
-              "properties": {
-                "drinkId": { "type": "number", "description": "商品唯一 ID" },
-                "name": { "type": "string", "description": "商品名称" },
-                "price": { "type": "number", "description": "基础价格（元）" },
-                "categoryName": { "type": "string", "description": "分类名" },
-                "description": { "type": "string", "description": "商品简介" }
-              }
-            }
-          },
-          "total": { "type": "number", "description": "该场景下可选饮品总数" },
-          "hasMore": { "type": "boolean", "description": "是否有更多商品可浏览" },
-          "keyword": { "type": "string", "description": "搜索关键词（推荐场景为 null）" }
-        }
-      },
-      "_meta": { "ui": { "componentPath": "components/recommended-drinks/index" } }
-    },
-    {
       "name": "searchDrinks",
-      "description": "按关键词检索饮品列表（业务对象：饮品搜索结果卡片）。\n调用前置条件：用户说出了具体的商品名或分类关键词（如「拿铁」「奶茶」「水果茶」）。\n【严禁场景】用户仅表达「想喝点东西」等模糊意图时，禁止调用本接口，应调用 getRecommendedDrinks。",
+      "description": "检索 / 浏览饮品列表（业务对象：饮品结果卡片）。\n【keyword 有值】按商品名或分类关键词检索（如「拿铁」「奶茶」「水果茶」）。\n【keyword 留空】返回全部饮品，用于用户「随便看看 / 浏览全部 / 想喝点什么 / 推荐一下」等模糊意图。\n【取值约束】keyword 必须来自用户原话，禁止编造用户没说过的具体商品名；用户没给具体词时留空走全部，不要瞎猜。",
       "inputSchema": {
         "type": "object",
         "properties": {
           "keyword": {
             "type": "string",
-            "description": "商品名或分类关键词（用户原话中的饮品名/品类词）。取值来源：用户原话。【禁止编造】用户未说出任何饮品关键词时，禁止填写本字段，应改走 getRecommendedDrinks。"
+            "description": "（选填）商品名或分类关键词，取值来自用户原话。用户明确说了饮品名/品类时填写按词检索；用户只是想随便看看 / 浏览全部 / 表达模糊意图时留空，返回全部饮品。【禁止编造】禁止填写用户没说过的具体商品名。"
           }
-        },
-        "required": ["keyword"]
+        }
       },
       "outputSchema": {
         "type": "object",
@@ -72,18 +34,18 @@
           "keyword": { "type": "string", "description": "用户搜索关键词" }
         }
       },
-      "_meta": { "ui": { "componentPath": "components/recommended-drinks/index" } }
+      "_meta": { "ui": { "componentPath": "components/recommended-drinks/index", "pagePath": "/pages/home/home" } }
     },
 
     {
       "name": "selectDrink",
-      "description": "查看某款饮品详情及可选规格（业务对象：饮品详情卡片）。\n调用前置条件：已从 getRecommendedDrinks / searchDrinks 返回的 items 中获取到具体的 drinkId。\n【严禁场景】禁止在未获得有效 drinkId 的情况下调用本接口，禁止从用户自然语言推断 drinkId。\n【后续动作】展示饮品详情卡片后，等待用户在卡片上点击「直接下单」（组件会自动触发 confirmSku），禁止 Agent 主动调用 confirmSku 跳过卡片展示。",
+      "description": "查看某款饮品详情及可选规格（业务对象：饮品详情卡片）。\n调用前置条件：已从 searchDrinks 返回的 items 中获取到具体的 drinkId。\n【严禁场景】禁止在未获得有效 drinkId 的情况下调用本接口，禁止从用户自然语言推断 drinkId。\n【后续动作】本接口返回 handoff 并出小程序卡片；用一句简短话术引导用户点击卡片进入饮品详情 / 选规格接力页，在页面内完成选规格、加入订单及支付等后续操作。",
       "inputSchema": {
         "type": "object",
         "properties": {
           "drinkId": {
             "type": "number",
-            "description": "商品唯一标识，必须来自上游接口 getRecommendedDrinks / searchDrinks / getAllDrinks 返回的 items[].drinkId 字段原值。【禁止编造】禁止从用户自然语言（如『那个 3 号』）推断或截取，禁止使用示例值。上下文中无可用 drinkId 时，应先调 getRecommendedDrinks 或 searchDrinks。"
+            "description": "商品唯一标识，必须来自上游接口 searchDrinks 返回的 items[].drinkId 字段原值。【禁止编造】禁止从用户自然语言（如『那个 3 号』）推断或截取，禁止使用示例值。上下文中无可用 drinkId 时，应先调 searchDrinks。"
           }
         },
         "required": ["drinkId"]
@@ -102,11 +64,11 @@
           }
         }
       },
-      "_meta": { "ui": { "componentPath": "components/drink-detail-card/index" } }
+      "_meta": { "ui": { "componentPath": "components/drink-detail-card/index", "pagePath": "/packageDetail/pages/sku-picker" } }
     },
     {
-      "name": "confirmSku",
-      "description": "确认饮品规格并生成订单（业务对象：订单确认卡片）。\n调用前置条件：已调用 selectDrink 成功获取到饮品详情（即上下文中有 selectDrink 返回的 drinkId 和 specOptions）。\n【严禁场景】禁止未经 selectDrink 直接调用本接口；禁止使用中文 label 作为 specs value（必须使用英文枚举值）。",
+      "name": "createOrder",
+      "description": "确认饮品规格并【新建】订单（业务对象：订单确认卡片）。用户「就要这一杯 / 换一杯 / 重新点」时调用本接口。\n调用前置条件：已调用 selectDrink 成功获取到饮品详情（即上下文中有 selectDrink 返回的 drinkId 和 specOptions）。\n【单次仅一杯】本接口每次只处理一杯饮品（一个 drinkId + 一套 specs），不支持一次下多杯/多款；用户要多杯时先用本接口下第一杯，其余每杯各调一次 addToOrder 追加。\n【单次购买语义】整个点单链路同一时刻只维护一个活动订单。本接口每次调用都会新建订单并覆盖之前的活动订单；若用户是要在已有订单基础上「再加一杯 / 追加」，应改调 addToOrder，不要用本接口。\n【严禁场景】禁止未经 selectDrink 直接调用本接口；禁止使用中文 label 作为 specs value（必须使用英文枚举值）。",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -120,17 +82,17 @@
             "properties": {
               "temperature": {
                 "type": "string",
-                "description": "温度。仅允许：'ice'（冰）/ 'hot'（热）。用户说「热的」→ 'hot'，用户说「冰的」或未指定 → 'ice'。",
+                "description": "温度。仅允许：'ice'（冰）/ 'hot'（热）。【仅当用户明确说了冷热时才传】用户说「热的」→ 'hot'；用户没提温度时不要传本字段（系统默认 'ice' 冰），严禁在用户未说温度时自行猜成 'hot'。",
                 "enum": ["ice", "hot"]
               },
               "sugar": {
                 "type": "string",
-                "description": "糖度。仅允许：'none'（无糖）/ 'less'（少糖）/ 'normal'（标准）/ 'more'（多糖）。用户未指定时使用 'normal'。",
+                "description": "糖度。仅允许：'none'（无糖）/ 'less'（少糖）/ 'normal'（标准）/ 'more'（多糖）。【仅当用户明确说了糖度时才传】用户没提糖度时不要传本字段（系统默认 'normal' 标准）。",
                 "enum": ["none", "less", "normal", "more"]
               },
               "cupSize": {
                 "type": "string",
-                "description": "杯型。仅允许：'medium'（中杯）/ 'large'（大杯）/ 'xlarge'（超大杯，仅部分品类支持）。用户未指定时使用 'medium'。",
+                "description": "杯型。仅允许：'medium'（中杯）/ 'large'（大杯）/ 'xlarge'（超大杯，仅部分品类支持）。【仅当用户明确说了杯型时才传】用户没提杯型时不要传本字段（系统默认 'medium' 中杯）。",
                 "enum": ["medium", "large", "xlarge"]
               },
               "toppings": {
@@ -150,52 +112,199 @@
         "type": "object",
         "properties": {
           "orderId": { "type": "string", "description": "订单 ID" },
-          "drinkName": { "type": "string", "description": "饮品名称" },
-          "specText": { "type": "string", "description": "规格文本描述" },
+          "items": {
+            "type": "array",
+            "description": "订单内已选商品列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": { "type": "string", "description": "订单商品项唯一标识，删除商品(removeOrderItem)时用于定位" },
+                "drinkName": { "type": "string", "description": "饮品名称" },
+                "specText": { "type": "string", "description": "规格文本描述" },
+                "totalPrice": { "type": "number", "description": "该商品小计（元）" }
+              }
+            }
+          },
+          "itemCount": { "type": "number", "description": "订单内商品件数" },
           "totalPrice": { "type": "number", "description": "订单总价（元）" },
-          "needAddress": { "type": "boolean", "description": "true 表示用户需在卡片上补充收货地址" },
-          "status": { "type": "string", "description": "订单状态：awaiting_address / confirmed" }
+          "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
         }
       },
-      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index" } }
+      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
     },
     {
-      "name": "getAddress",
-      "description": "弹出系统地址选择器让用户选择收货地址（业务对象：地址卡片）。内部调用 wx.chooseAddress，用户选择后自动保存。用户取消时返回已存储的地址或空。\n调用前置条件：用户点击了订单确认卡上的地址区域，或 Agent 需要获取/更新收货地址时。\n【严禁场景】无特殊限制。",
-      "inputSchema": { "type": "object", "properties": {} },
+      "name": "addToOrder",
+      "description": "向【当前进行中的订单】追加一款饮品（业务对象：订单确认卡片，含全部已选商品）。用户「再加一杯 / 还要一个 / 顺便来个X / 多来一份」等追加意图时调用本接口。\n调用前置条件：已调用 selectDrink 成功获取到本次追加饮品的 drinkId 和 specOptions。\n【单次仅一杯】本接口每次只追加一杯饮品（一个 drinkId + 一套 specs），不支持一次追加多杯/多款；用户一次要多杯时，需逐杯各调一次本接口。\n【单次购买语义】只维护一个活动订单：有进行中的订单则把本杯追加进去；若当前没有进行中的订单，则以本杯新建订单（因此追加意图下调用本接口总是安全的，不会因无订单而失败）。追加后 handoff 进结算页展示全部已选商品与合计。\n【严禁场景】① 禁止未经 selectDrink 直接调用；② 禁止使用中文 label 作为 specs value（必须使用英文枚举值）。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "drinkId": {
+            "type": "number",
+            "description": "要追加的商品唯一标识，必须来自上一步 selectDrink 返回的 structuredContent.drinkId 原值。【禁止编造】禁止从用户语言推断。"
+          },
+          "specs": {
+            "type": "object",
+            "description": "追加商品的规格对象，key 为维度 key，value 必须使用英文枚举值。取值来源：selectDrink 返回的 specOptions 中各维度的 options[].value。【禁止编造】禁止使用中文 label 或不在枚举中的值。",
+            "properties": {
+              "temperature": {
+                "type": "string",
+                "description": "温度。仅允许：'ice'（冰）/ 'hot'（热）。【仅当用户明确说了冷热时才传】用户没提温度时不要传本字段（系统默认 'ice' 冰）。",
+                "enum": ["ice", "hot"]
+              },
+              "sugar": {
+                "type": "string",
+                "description": "糖度。仅允许：'none'（无糖）/ 'less'（少糖）/ 'normal'（标准）/ 'more'（多糖）。【仅当用户明确说了糖度时才传】用户没提糖度时不要传本字段（系统默认 'normal' 标准）。",
+                "enum": ["none", "less", "normal", "more"]
+              },
+              "cupSize": {
+                "type": "string",
+                "description": "杯型。仅允许：'medium'（中杯）/ 'large'（大杯）/ 'xlarge'（超大杯，仅部分品类支持）。【仅当用户明确说了杯型时才传】用户没提杯型时不要传本字段（系统默认 'medium' 中杯）。",
+                "enum": ["medium", "large", "xlarge"]
+              },
+              "toppings": {
+                "type": "array",
+                "description": "加料（多选）。元素仅允许：'oatMilk'（燕麦奶）/ 'coconut'（椰浆）/ 'extraShot'（额外浓缩，仅奶咖）/ 'pearl'（珍珠）/ 'jelly'（椰果）。用户未指定时传空数组 []。",
+                "items": {
+                  "type": "string",
+                  "enum": ["oatMilk", "coconut", "extraShot", "pearl", "jelly"]
+                }
+              }
+            }
+          }
+        },
+        "required": ["drinkId", "specs"]
+      },
       "outputSchema": {
         "type": "object",
         "properties": {
-          "hasAddress": { "type": "boolean", "description": "是否已有地址" },
-          "address": {
-            "type": "object",
-            "description": "收货地址信息（无地址时为 null）",
-            "properties": {
-              "name": { "type": "string", "description": "收货人姓名" },
-              "phone": { "type": "string", "description": "手机号" },
-              "detail": { "type": "string", "description": "详细地址" }
+          "orderId": { "type": "string", "description": "被追加的订单 ID" },
+          "items": {
+            "type": "array",
+            "description": "追加后订单内全部已选商品列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": { "type": "string", "description": "订单商品项唯一标识，删除商品(removeOrderItem)时用于定位" },
+                "drinkName": { "type": "string", "description": "饮品名称" },
+                "specText": { "type": "string", "description": "规格文本描述" },
+                "totalPrice": { "type": "number", "description": "该商品小计（元）" }
+              }
             }
-          }
+          },
+          "itemCount": { "type": "number", "description": "追加后订单内商品件数" },
+          "totalPrice": { "type": "number", "description": "追加后订单总价（元）" },
+          "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
         }
-      }
+      },
+      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
+    },
+    {
+      "name": "removeOrderItem",
+      "description": "从【当前进行中的订单】删除一款已选商品（业务对象：订单确认卡片，含剩余商品）。用户「去掉/删掉/不要那杯X / 把X删了」等删除意图时调用本接口。\n【铁律：至少保留一件】当订单仅剩最后一件商品时禁止删除，接口会返回错误并要求你直接告知用户「仅剩一件，无法删除」，此时禁止重试。\n【改规格场景】用户要改某商品规格时：若订单有多件，先用本接口删除旧商品项、再用 addToOrder 追加新规格；若订单仅此一件（删不掉最后一件），改用 createOrder 以新规格覆盖整单。\n调用前置条件：从订单返回值 structuredContent.items[].itemId 中取到要删除商品项的 itemId。\n【严禁场景】禁止编造 itemId；itemId 必须来自订单接口返回的 items[].itemId 原值。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "要删除的订单商品项唯一标识。取值来源：createOrder / addToOrder / saveAddress / removeOrderItem 返回的 structuredContent.items[].itemId 原值。【禁止编造】禁止臆造或从饮品名推断。"
+          }
+        },
+        "required": ["itemId"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "orderId": { "type": "string", "description": "被操作的订单 ID" },
+          "items": {
+            "type": "array",
+            "description": "删除后订单内剩余商品列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": { "type": "string", "description": "订单商品项唯一标识" },
+                "drinkName": { "type": "string", "description": "饮品名称" },
+                "specText": { "type": "string", "description": "规格文本描述" },
+                "totalPrice": { "type": "number", "description": "该商品小计（元）" }
+              }
+            }
+          },
+          "itemCount": { "type": "number", "description": "删除后订单内商品件数" },
+          "totalPrice": { "type": "number", "description": "删除后订单总价（元）" },
+          "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
+    },
+    {
+      "name": "viewOrder",
+      "description": "查看当前进行中的订单（业务对象：订单确认卡片，含全部已选商品）。用户「看看我的订单 / 我点了什么 / 查看购物车 / 订单里有啥 / 一共多少钱」等查看意图时调用本接口。\n【语义】只查看当前活动订单（未支付）；若没有进行中的订单，接口会返回错误并要求你直接告知用户暂无订单，此时禁止重试。\n【无入参】本接口不需要任何参数。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "orderId": { "type": "string", "description": "当前订单 ID" },
+          "items": {
+            "type": "array",
+            "description": "订单内全部已选商品列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": { "type": "string", "description": "订单商品项唯一标识" },
+                "drinkName": { "type": "string", "description": "饮品名称" },
+                "specText": { "type": "string", "description": "规格文本描述" },
+                "totalPrice": { "type": "number", "description": "该商品小计（元）" }
+              }
+            }
+          },
+          "itemCount": { "type": "number", "description": "订单内商品件数" },
+          "totalPrice": { "type": "number", "description": "订单总价（元）" },
+          "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+        }
+      },
+      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
+    },
+    {
+      "name": "cancelOrder",
+      "description": "取消当前进行中的订单（清空全部已选商品）。用户「取消订单 / 不要了 / 清空购物车 / 全部删掉 / 重新点」等整单取消意图时调用本接口。\n【语义】只作用于当前未支付的活动订单；取消后订单清空、活动订单失效，handoff 回首页让用户重新挑选。\n【与 removeOrderItem 区别】removeOrderItem 只删单件且至少保留一件；本接口是清空整单。用户想清掉最后一件 / 清空全部时用本接口。\n【无进行中订单】若当前没有活动订单，接口返回错误并要求你直接告知用户暂无可取消的订单，此时禁止重试。\n【无入参】本接口不需要任何参数。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "description": "是否取消成功" },
+          "orderId": { "type": "string", "description": "被取消的订单 ID" },
+          "canceledCount": { "type": "number", "description": "被清空的商品件数" },
+          "status": { "type": "string", "description": "订单状态：canceled" }
+        }
+      },
+      "_meta": { "ui": { "pagePath": "/pages/home/home" } }
     },
     {
       "name": "saveAddress",
-      "description": "保存用户收货地址（业务对象：订单确认卡片更新）。若存在未完成订单，接口会自动续跑订单确认流程并返回更新后的订单确认卡片。\n调用前置条件：用户已在半屏页面或对话中提供了完整地址信息（姓名+手机号+详细地址）。\n【严禁场景】三个必填字段任一缺失时禁止调用，应先反问用户补充缺失信息。",
+      "description": "保存用户【本次新提供的】收货地址并接力进入结算页（业务对象：订单确认卡片，含全部已选商品）。若存在进行中的活动订单，接口会把地址写入订单、更新为 confirmed，并通过 handoff 让用户点击卡片进入结算页确认支付。\n调用前置条件：用户在本轮对话中【明确说出了完整的新地址】（收货人姓名 + 手机号 + 详细地址三项齐全）。\n【严禁场景】① 用户只是表达『改/换/更新收货地址』等意图、但尚未给出具体新地址时，禁止调用本接口，必须先以追问的方式向用户确认新的收货人、手机号、详细地址；② 禁止使用上下文里的旧地址 / 已保存地址占位，重复保存同一个地址；③ 三个必填字段任一缺失时禁止调用，应先追问补齐后再调用。",
       "inputSchema": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "收货人姓名。取值来源：用户原话或半屏页面传入。【禁止编造】用户未提供时禁止填写，应反问用户。"
+            "description": "收货人姓名。取值来源：用户本轮提供的新地址原话。【禁止编造 / 禁止沿用旧值】用户本轮未明确给出时禁止填写，应先追问用户。"
           },
           "phone": {
             "type": "string",
-            "description": "手机号，11 位数字。取值来源：用户原话或半屏页面传入。【禁止编造】用户未提供时禁止填写，应反问用户。"
+            "description": "手机号，11 位数字。取值来源：用户本轮提供的新地址原话。【禁止编造 / 禁止沿用旧值】用户本轮未明确给出时禁止填写，应先追问用户。"
           },
           "detail": {
             "type": "string",
-            "description": "详细地址。取值来源：用户原话或半屏页面传入。【禁止编造】用户未提供时禁止填写，应反问用户。"
+            "description": "详细地址。取值来源：用户本轮提供的新地址原话。【禁止编造 / 禁止沿用旧值】用户本轮未明确给出时禁止填写，应先追问用户。"
           }
         },
         "required": ["name", "phone", "detail"]
@@ -204,112 +313,33 @@
         "type": "object",
         "properties": {
           "success": { "type": "boolean", "description": "是否保存成功" },
-          "orderId": { "type": "string", "description": "续跑的订单 ID（无 pending 订单时不存在）" },
-          "drinkName": { "type": "string", "description": "饮品名称" },
-          "specText": { "type": "string", "description": "规格描述" },
+          "orderId": { "type": "string", "description": "续跑的活动订单 ID（无活动订单时不存在）" },
+          "items": {
+            "type": "array",
+            "description": "订单内全部已选商品列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemId": { "type": "string", "description": "订单商品项唯一标识，删除商品(removeOrderItem)时用于定位" },
+                "drinkName": { "type": "string", "description": "饮品名称" },
+                "specText": { "type": "string", "description": "规格文本描述" },
+                "totalPrice": { "type": "number", "description": "该商品小计（元）" }
+              }
+            }
+          },
+          "itemCount": { "type": "number", "description": "订单内商品件数" },
           "totalPrice": { "type": "number", "description": "订单总价" },
           "needAddress": { "type": "boolean", "description": "是否仍缺地址" },
           "status": { "type": "string", "description": "订单状态" }
         }
       },
-      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index" } }
-    },
-    {
-      "name": "confirmOrder",
-      "description": "展示订单确认信息卡片（业务对象：订单确认卡片，含商品+地址+金额）。\n调用前置条件：已通过 confirmSku 或 saveAddress 获取到有效的 orderId。\n【严禁场景】禁止在无 orderId 时调用；禁止从用户语言推断 orderId。",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "orderId": {
-            "type": "string",
-            "description": "订单唯一标识，必须来自上游接口 confirmSku / saveAddress 返回的 orderId 字段原值。【禁止编造】禁止从用户自然语言推断，上下文中无可用 orderId 时应先引导用户完成选品下单流程。"
-          }
-        },
-        "required": ["orderId"]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "orderId": { "type": "string" },
-          "drinkName": { "type": "string" },
-          "specText": { "type": "string" },
-          "totalPrice": { "type": "number" },
-          "needAddress": { "type": "boolean", "description": "是否需要补充地址" },
-          "status": { "type": "string", "description": "订单状态" }
-        }
-      },
-      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index" } }
-    },
-    {
-      "name": "payOrder",
-      "description": "发起订单支付（业务对象：支付成功卡片）。若微信支付环境不可用会自动降级为 mock 成功，确保流程跑通。\n调用前置条件：订单状态为 confirmed（已有地址 + 已确认商品规格），orderId 来自 confirmSku / saveAddress / confirmOrder 返回值。\n【严禁场景】订单缺少地址（status=awaiting_address）时禁止调用，应引导用户先补充地址；禁止在 payOrder 未返回成功前向用户宣布「已支付成功」。",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "orderId": {
-            "type": "string",
-            "description": "订单唯一标识，必须来自上游接口 confirmSku / saveAddress / confirmOrder 返回的 orderId 字段原值。【禁止编造】禁止从用户语言推断。"
-          },
-          "address": {
-            "type": "object",
-            "description": "可选，收货地址。由卡片组件自动传入，Agent 通常无需手动填写。",
-            "properties": {
-              "name": { "type": "string" },
-              "phone": { "type": "string" },
-              "detail": { "type": "string" }
-            }
-          }
-        },
-        "required": ["orderId"]
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "orderId": { "type": "string" },
-          "paidAmount": { "type": "number", "description": "实付金额" },
-          "payTime": { "type": "string", "description": "支付时间 ISO 格式" },
-          "status": { "type": "string", "description": "订单状态：paid" },
-          "drinkName": { "type": "string", "description": "饮品名称" },
-          "specText": { "type": "string", "description": "规格描述" }
-        }
-      },
-      "_meta": { "ui": { "componentPath": "components/pay-success-card/index" } }
-    },
-    {
-      "name": "getStoreStatus",
-      "description": "获取最近门店基础信息（业务对象：门店状态卡片，含实时排队人数与预计出杯时间）。实时数据由卡片组件自身通过网络请求动态刷新，本接口仅返回静态门店信息。\n调用前置条件：用户询问门店相关信息（如「最近的店在哪」「现在排队吗」）。\n【严禁场景】用户未表达门店查询意图时禁止调用。",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "storeId": { "type": "string", "description": "可选，指定门店 id。用户未指定具体门店时留空，返回最近门店。" }
-        }
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "storeId": { "type": "string" },
-          "storeName": { "type": "string" },
-          "distance": { "type": "string" },
-          "address": { "type": "string" }
-        }
-      },
-      "_meta": { "ui": { "componentPath": "components/store-status-card/index" } }
+      "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
     }
   ],
   "components": [
-    { "path": "components/recommended-drinks/index", "relatedPage": "/packageDetail/pages/more-drinks" },
+    { "path": "components/recommended-drinks/index", "relatedPage": "/pages/home/home" },
     { "path": "components/drink-detail-card/index", "relatedPage": "/packageDetail/pages/sku-picker" },
-    { "path": "components/order-confirm-card/index", "relatedPage": "/packageDetail/pages/address-edit" },
-    { "path": "components/pay-success-card/index", "relatedPage": "/pages/home/home" },
-    { "path": "components/drink-not-found-card/index", "relatedPage": "/packageDetail/pages/more-drinks" },
-    {
-      "path": "components/store-status-card/index",
-      "relatedPage": "/pages/home/home",
-      "permissions": {
-        "scope.dynamic": {
-          "desc": "用于实时刷新门店排队人数与预计出杯时间，展示动态门店状态"
-        }
-      }
-    }
+    { "path": "components/order-confirm-card/index", "relatedPage": "/packageDetail/pages/checkout" },
+    { "path": "components/drink-not-found-card/index", "relatedPage": "/pages/home/home" }
   ]
 }

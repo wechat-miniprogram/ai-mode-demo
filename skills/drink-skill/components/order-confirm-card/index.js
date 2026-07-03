@@ -46,29 +46,14 @@ Component({
     }
   },
   methods: {
+    // 注意：handoff 模式下本组件在小微对话内不渲染，支付与选址均改由接力页
+    // checkout 内用 wx.requestPayment / wx.chooseAddress 就地完成；
+    // 原 payOrder / getAddress 原子接口已随 handoff 改造下线，故此处不再发起 api/call。
     onTapPay() {
-      if (!this.data.orderId) return
-      const args = { orderId: this.data.orderId }
-      // 如果卡片上已有地址，一并传递，避免异步时序导致订单缺少地址
-      if (this.data.address) {
-        args.address = this.data.address
-      }
-      this._modelCtx.sendFollowUpMessage({
-        content: [
-          { type: 'text', text: '确认下单' },
-          { type: 'api/call', data: { name: 'payOrder', arguments: args } }
-        ]
-      })
+      // 已下线：支付在接力页 checkout 完成
     },
     onTapAddress() {
-      // 原子组件不支持 wx.chooseAddress，通过 sendFollowUpMessage 触发原子接口
-      // getAddress 原子接口内部会调用 wx.chooseAddress
-      this._modelCtx.sendFollowUpMessage({
-        content: [
-          { type: 'text', text: '选择收货地址' },
-          { type: 'api/call', data: { name: 'getAddress', arguments: {} } }
-        ]
-      })
+      // 已下线：收货地址在接力页 checkout 通过 wx.chooseAddress 选择
     }
   }
 })

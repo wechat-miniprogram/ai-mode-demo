@@ -10,7 +10,7 @@ async function selectDrink({ drinkId } = {}) {
     if (!drinkId) {
       return {
         isError: true,
-        content: [{ type: 'text', text: '缺少 drinkId。禁止编造 ID 再次调用本接口。正确出口：先调用 getRecommendedDrinks 或 searchDrinks 获取可用 drinkId。' }]
+        content: [{ type: 'text', text: '缺少 drinkId。禁止编造 ID 再次调用本接口。正确出口：先调用 searchDrinks 获取可用 drinkId。' }]
       }
     }
     const drink = findDrink(drinkId)
@@ -20,7 +20,7 @@ async function selectDrink({ drinkId } = {}) {
         isError: true,
         content: [{
           type: 'text',
-          text: `未在商品库中找到 drinkId=${drinkId} 的饮品记录。禁止编造其他 ID 再次调用本接口，禁止从用户自然语言推断 ID。正确出口：调用 getRecommendedDrinks 或 searchDrinks 获取有效的 drinkId。`
+          text: `未在商品库中找到 drinkId=${drinkId} 的饮品记录。禁止编造其他 ID 再次调用本接口，禁止从用户自然语言推断 ID。正确出口：调用 searchDrinks 获取有效的 drinkId。`
         }]
       }
     }
@@ -40,10 +40,10 @@ async function selectDrink({ drinkId } = {}) {
 
     return {
       isError: false,
-      // content：事实陈述
+      // content：事实陈述 + 业务动作（小微：引导点击小程序卡片进入详情页）
       content: [{
         type: 'text',
-        text: `已加载饮品「${drink.name}」详情（基础价 ¥${drink.price}）。接下来为用户展示饮品详情卡片，用简短话术引导用户点击卡片上的"直接下单"按钮。禁止 Agent 主动调用 confirmSku 跳过卡片展示，禁止以纯文本列出商品详情。`
+        text: `已加载饮品「${drink.name}」详情（基础价 ¥${drink.price}）。请用一句简短话术引导用户点击下方小程序卡片进入饮品详情页，在页面内选规格并下单。禁止以纯文本列出商品详情。`
       }],
       // structuredContent：Agent 理解屏幕内容（不含图片、不含完整 schema）
       structuredContent: {
@@ -54,7 +54,20 @@ async function selectDrink({ drinkId } = {}) {
         categoryName: drink.categoryName,
         specOptions
       },
-      // _meta：组件渲染用（含图片和完整 skuSchema）
+      // handoff：小微接力数据。query 为 string；payload 预置详情供接力页首屏加速
+      handoff: {
+        query: `drinkId=${drink.id}`,
+        payload: {
+          drinkId: drink.id,
+          name: drink.name,
+          price: drink.price,
+          description: drink.description,
+          categoryName: drink.categoryName,
+          imageUrl: drink.imageUrl,
+          skuSchema: drink.skuSchema
+        }
+      },
+      // _meta：组件渲染用（含图片和完整 skuSchema），小微不渲染原子组件，保留兼容
       _meta: {
         imageUrl: drink.imageUrl,
         skuSchema: drink.skuSchema

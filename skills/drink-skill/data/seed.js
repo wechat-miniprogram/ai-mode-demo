@@ -12,13 +12,12 @@ const CATEGORIES = [
 const DRINKS = [
   // 黑咖/果咖
   { id: 289, name: '美式', price: 15, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251209/17652673086937d76c17e9c.jpg' },
-  { id: 366, name: '超大杯美式600ml', price: 20, categoryId: 141, categoryName: '黑咖/果咖', description: '含四份浓缩咖啡', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176534508969390741d4166.jpg' },
   { id: 293, name: '白桃茶美式', price: 16, categoryId: 141, categoryName: '黑咖/果咖', description: '清爽茶香', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176534486869390664b695a.jpg' },
-  { id: 295, name: '杨桃油柑冰美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '鲜油柑+杨桃', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20260316/177362732169b767b997a3e.jpg' },
-  { id: 353, name: '凤梨冰美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '推荐', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/17653523176939237d0eb54.jpg' },
-  { id: 362, name: '葡萄冰美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176535381669392958855c3.jpg' },
-  { id: 294, name: '爆柠冰美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176535305869392662b1f7b.jpg' },
-  { id: 296, name: '鲜橙冰美式', price: 20, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/1765352595693924931d530.jpg' },
+  { id: 295, name: '杨桃油柑美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '鲜油柑+杨桃', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20260316/177362732169b767b997a3e.jpg' },
+  { id: 353, name: '凤梨美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '推荐', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/17653523176939237d0eb54.jpg' },
+  { id: 362, name: '葡萄美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176535381669392958855c3.jpg' },
+  { id: 294, name: '爆柠美式', price: 18, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/176535305869392662b1f7b.jpg' },
+  { id: 296, name: '鲜橙美式', price: 20, categoryId: 141, categoryName: '黑咖/果咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20251210/1765352595693924931d530.jpg' },
 
   // 奶咖
   { id: 393, name: '焦糖蜂窝拿铁', price: 20, categoryId: 133, categoryName: '奶咖', description: '', imageUrl: 'https://coffeebar.ext.pinquest.cn/uploads/goods/20260309/177303790969ae6955c4adc.jpg' },
