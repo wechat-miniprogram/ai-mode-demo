@@ -60,12 +60,13 @@
   },
   "compileType": "miniprogram",
   "libVersion": "latest",
-  "appid": "",
+  "appid": "wx40f8626ddf43d362",
   "projectname": "drink-ai-demo",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "simulatorPluginLibVersion": {}
+  "simulatorPluginLibVersion": {},
+  "isGameTourist": false
 }
