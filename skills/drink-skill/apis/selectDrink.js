@@ -52,7 +52,8 @@ async function selectDrink({ drinkId } = {}) {
         price: drink.price,
         description: drink.description,
         categoryName: drink.categoryName,
-        specOptions
+        specOptions,
+        pagePath: `/packageDetail/pages/sku-picker?drinkId=${encodeURIComponent(drink.id)}`
       },
       // handoff：小微接力数据。query 为 string；payload 预置详情供接力页首屏加速
       handoff: {

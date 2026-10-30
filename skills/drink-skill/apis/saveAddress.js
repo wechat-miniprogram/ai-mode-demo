@@ -42,7 +42,9 @@ async function saveAddress({ name, phone, detail } = {}) {
         itemCount: order.itemCount,
         totalPrice: order.totalPrice,
         needAddress: false,
-        status: 'confirmed'
+        status: 'confirmed',
+        pageTitle: '查看订单',
+        pagePath: `/packageDetail/pages/checkout?orderId=${encodeURIComponent(order.orderId)}`
       }
 
       const handoffPayload = {
@@ -76,7 +78,7 @@ async function saveAddress({ name, phone, detail } = {}) {
     return {
       isError: false,
       content: [{ type: 'text', text: '地址已保存成功。' }],
-      structuredContent: { success: true },
+      structuredContent: { success: true, pageTitle: '浏览饮品', pagePath: '/pages/home/home' },
       _meta: {}
     }
   } catch (err) {

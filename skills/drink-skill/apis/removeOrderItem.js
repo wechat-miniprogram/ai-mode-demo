@@ -66,7 +66,9 @@ async function removeOrderItem({ itemId } = {}) {
       itemCount: order.itemCount,
       totalPrice: order.totalPrice,
       needAddress,
-      status: order.status
+      status: order.status,
+      pageTitle: '查看订单',
+      pagePath: `/packageDetail/pages/checkout?orderId=${encodeURIComponent(order.orderId)}`
     }
 
     const handoffPayload = {

@@ -36,7 +36,9 @@ async function cancelOrder() {
         success: true,
         orderId: order.orderId,
         canceledCount,
-        status: 'canceled'
+        status: 'canceled',
+        pageTitle: '重新挑选饮品',
+        pagePath: '/pages/home/home'
       },
       // handoff：订单已清空，回首页重新浏览
       handoff: {

@@ -25,13 +25,14 @@
                 "name": { "type": "string", "description": "商品名称" },
                 "price": { "type": "number", "description": "基础价格（元）" },
                 "categoryName": { "type": "string", "description": "分类名" },
-                "description": { "type": "string", "description": "商品简介" }
+                "description": { "type": "string", "description": "商品简介" },
+                "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "name", "description": "饮品详情页路径" }
               }
             }
           },
           "total": { "type": "number", "description": "匹配总数" },
           "hasMore": { "type": "boolean", "description": "是否有更多结果" },
-          "keyword": { "type": "string", "description": "用户搜索关键词" }
+          "keyword": { "type": ["string", "null"], "description": "用户搜索关键词；浏览全部时为 null" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/recommended-drinks/index", "pagePath": "/pages/home/home" } }
@@ -58,9 +59,28 @@
           "price": { "type": "number", "description": "基础价格（元）" },
           "description": { "type": "string" },
           "categoryName": { "type": "string" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "name", "description": "饮品详情页路径" },
           "specOptions": {
             "type": "object",
-            "description": "可选规格维度，key 为维度 key（temperature/sugar/cupSize/toppings），每个维度含 options 数组"
+            "description": "可选规格维度，key 为维度 key（temperature/sugar/cupSize/toppings）",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "label": { "type": "string" },
+                "multiple": { "type": "boolean" },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": { "type": "string" },
+                      "label": { "type": "string" },
+                      "extraPrice": { "type": "number" }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -128,7 +148,9 @@
           "itemCount": { "type": "number", "description": "订单内商品件数" },
           "totalPrice": { "type": "number", "description": "订单总价（元）" },
           "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
-          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" },
+          "pageTitle": { "type": "string", "description": "订单链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "订单结算页路径" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
@@ -195,7 +217,9 @@
           "itemCount": { "type": "number", "description": "追加后订单内商品件数" },
           "totalPrice": { "type": "number", "description": "追加后订单总价（元）" },
           "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
-          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" },
+          "pageTitle": { "type": "string", "description": "订单链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "订单结算页路径" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
@@ -233,7 +257,9 @@
           "itemCount": { "type": "number", "description": "删除后订单内商品件数" },
           "totalPrice": { "type": "number", "description": "删除后订单总价（元）" },
           "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
-          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" },
+          "pageTitle": { "type": "string", "description": "订单链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "订单结算页路径" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
@@ -265,7 +291,9 @@
           "itemCount": { "type": "number", "description": "订单内商品件数" },
           "totalPrice": { "type": "number", "description": "订单总价（元）" },
           "needAddress": { "type": "boolean", "description": "true 表示用户需在结算页补充收货地址" },
-          "status": { "type": "string", "description": "订单状态：pending / confirmed" }
+          "status": { "type": "string", "description": "订单状态：pending / confirmed" },
+          "pageTitle": { "type": "string", "description": "订单链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "订单结算页路径" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }
@@ -283,7 +311,9 @@
           "success": { "type": "boolean", "description": "是否取消成功" },
           "orderId": { "type": "string", "description": "被取消的订单 ID" },
           "canceledCount": { "type": "number", "description": "被清空的商品件数" },
-          "status": { "type": "string", "description": "订单状态：canceled" }
+          "status": { "type": "string", "description": "订单状态：canceled" },
+          "pageTitle": { "type": "string", "description": "重新选购链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "饮品首页路径" }
         }
       },
       "_meta": { "ui": { "pagePath": "/pages/home/home" } }
@@ -330,7 +360,9 @@
           "itemCount": { "type": "number", "description": "订单内商品件数" },
           "totalPrice": { "type": "number", "description": "订单总价" },
           "needAddress": { "type": "boolean", "description": "是否仍缺地址" },
-          "status": { "type": "string", "description": "订单状态" }
+          "status": { "type": "string", "description": "订单状态（无活动订单时不存在）" },
+          "pageTitle": { "type": "string", "description": "页面链接文案" },
+          "pagePath": { "type": "string", "format": "page-link", "x-link-text-field": "pageTitle", "description": "有活动订单时为结算页，否则为饮品首页" }
         }
       },
       "_meta": { "ui": { "componentPath": "components/order-confirm-card/index", "pagePath": "/packageDetail/pages/checkout" } }

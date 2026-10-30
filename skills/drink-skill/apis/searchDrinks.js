@@ -44,7 +44,8 @@ async function searchDrinks({ keyword } = {}) {
       name: d.name,
       price: d.price,
       categoryName: d.categoryName,
-      description: d.description
+      description: d.description,
+      pagePath: `/packageDetail/pages/sku-picker?drinkId=${encodeURIComponent(d.id)}`
     }))
 
     // _meta：组件渲染（含 imageUrl）
