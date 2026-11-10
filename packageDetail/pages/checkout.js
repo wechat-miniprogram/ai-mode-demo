@@ -1,8 +1,10 @@
 // 接力页：订单结算（地址 + 支付）
 // 小微 AI Handoff 入口（createOrder / addToOrder / saveAddress）：
-//   - onLoad(query) 接收 string query 解析后的对象（orderId）
+//   - 解析 handoff 原始 query 字符串（orderId，decodeURIComponent 后使用）
 //   - 可选从 wx.onAgentHandoff 缓存按 pageId 取 payload（预置 order）加速首屏
 //   - 进入小程序后用普通 wx.chooseAddress / wx.requestPayment 完成下单（不依赖 wx.openAgent）
+const { resolvePageQuery } = require('../../utils/query.js')
+
 function calcHeaderPaddingTop() {
   try {
     const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
@@ -139,19 +141,21 @@ Page({
     const nb = calcNavBack()
     this.setData({ headerPaddingTop: calcHeaderPaddingTop(), navBackTop: nb.top, navBackSize: nb.size })
 
-    // 1) 解析 handoff query（orderId）
-    const orderId = query && query.orderId ? String(query.orderId) : ''
-
-    // 2) 取 wx.onAgentHandoff 缓存 payload（预置 order）
+    // 1) 取 wx.onAgentHandoff 缓存 payload（预置 order）
+    let handoff = null
     let payload = null
     try {
       const app = getApp()
       if (app && app.takeAgentHandoff) {
-        const handoff = app.takeAgentHandoff(this.getPageId())
+        handoff = app.takeAgentHandoff(this.getPageId())
         payload = handoff && handoff.payload
         if (handoff) console.log('[checkout] handoff', handoff)
       }
     } catch (e) {}
+
+    // 2) 解析 query（orderId）：handoff 原始 query 需 decodeURIComponent 后使用
+    const params = resolvePageQuery(query, handoff)
+    const orderId = params.orderId ? String(params.orderId) : ''
 
     // handoff payload 是对话侧（skill 独立分包）最新数据，含 saveAddress 刚保存的地址；
     // 与本地订单合并，payload 字段优先，确保收货地址等最新信息同步到结算页

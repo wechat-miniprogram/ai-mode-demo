@@ -57,7 +57,7 @@ async function selectDrink({ drinkId } = {}) {
       },
       // handoff：小微接力数据。query 为 string；payload 预置详情供接力页首屏加速
       handoff: {
-        query: `drinkId=${drink.id}`,
+        query: `drinkId=${encodeURIComponent(drink.id)}`,
         payload: {
           drinkId: drink.id,
           name: drink.name,

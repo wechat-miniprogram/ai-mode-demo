@@ -79,7 +79,7 @@ async function createOrder({ drinkId, specs } = {}) {
       content: [{ type: 'text', text: actionText }],
       structuredContent,
       handoff: {
-        query: `orderId=${orderId}`,
+        query: `orderId=${encodeURIComponent(orderId)}`,
         payload: handoffPayload
       },
       _meta: {

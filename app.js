@@ -1,3 +1,5 @@
+const { parseQuery } = require('./utils/query.js')
+
 App({
   globalData: {
     userInfo: null,
@@ -22,8 +24,9 @@ App({
     wx.onAgentHandoff(({ pageId, path, query, payload }) => {
       console.log('[App] onAgentHandoff', { pageId, path, query, payload })
       this.globalData.agentHandoffs = this.globalData.agentHandoffs || {}
-      // 按 pageId 精确投递给目标接力页；query 为 string，payload 为可选预置数据
-      this.globalData.agentHandoffs[pageId] = { path, query, payload }
+      // 按 pageId 精确投递给目标接力页；payload 为可选预置数据
+      // query 为开发者自行 encodeURIComponent 拼接的原始字符串，需自行 decodeURIComponent 后使用
+      this.globalData.agentHandoffs[pageId] = { path, query, params: parseQuery(query), payload }
     })
   },
 

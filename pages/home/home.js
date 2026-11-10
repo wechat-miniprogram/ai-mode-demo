@@ -4,6 +4,7 @@
 // - 触发搜索时隐藏分类 tab，仅展示搜索结果；清空搜索恢复分类浏览
 // - 点击饮品 -> sku-picker 选规格
 const { buildCatalog, CATEGORIES } = require('../../data/seed.js')
+const { resolvePageQuery } = require('../../utils/query.js')
 
 const CATALOG_VERSION = 3
 
@@ -51,17 +52,19 @@ Page({
   onLoad(query) {
     this.setData({ headerPaddingTop: calcHeaderPaddingTop() })
 
-    // 1) 解析搜索 handoff query（keyword），string query 已被框架解析为对象
-    const keyword = query && query.keyword ? String(query.keyword) : ''
-
-    // 2) 消费 wx.onAgentHandoff 缓存（取后清理，避免重复消费）
+    // 1) 消费 wx.onAgentHandoff 缓存（取后清理，避免重复消费）
+    let handoff = null
     try {
       const app = getApp()
       if (app && app.takeAgentHandoff) {
-        const handoff = app.takeAgentHandoff(this.getPageId())
+        handoff = app.takeAgentHandoff(this.getPageId())
         if (handoff) console.log('[home] handoff', handoff)
       }
     } catch (e) {}
+
+    // 2) 解析搜索 query（keyword）：handoff 原始 query 已 decodeURIComponent，onLoad query 同样解码
+    const params = resolvePageQuery(query, handoff)
+    const keyword = params.keyword ? String(params.keyword) : ''
 
     const catalog = loadCatalog()
     this._catalog = catalog

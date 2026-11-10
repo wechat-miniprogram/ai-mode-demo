@@ -48,7 +48,7 @@ async function viewOrder() {
       }],
       structuredContent,
       handoff: {
-        query: `orderId=${order.orderId}`,
+        query: `orderId=${encodeURIComponent(order.orderId)}`,
         payload: handoffPayload
       },
       _meta: {

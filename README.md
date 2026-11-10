@@ -33,7 +33,7 @@
 1. **mcp.json**：在 `apis[]._meta.ui.pagePath` 声明接力页（不含 query）。
 2. **原子接口返回值**：顶层增加 `handoff: { query: 'string', payload?, card? }`。
 3. **app.js**：`onLaunch` 注册 `wx.onAgentHandoff`，按 `pageId` 缓存 `{ path, query, payload }`。
-4. **接力业务页**：`onLoad(query)` 解析 query；可选按 `pageId` 取 `payload` 加速首屏。
+4. **接力业务页**：解析 `wx.onAgentHandoff` 的原始 `query` 字符串（`decodeURIComponent` 后使用）；可选按 `pageId` 取 `payload` 加速首屏。
 
 
 ## 项目结构
@@ -63,4 +63,4 @@
 
 - 对话内**不渲染原子组件**，半屏页 `openDetailPage` 改为 handoff 进**完整页**。
 - `wx.openAgent` / `wx.navigateBackAgent` 当前不可用，接力页不要依赖「返回 Agent 对话」。
-- handoff `query` 为 **string**；接力页 `onLoad` 收到框架解析后的对象。
+- handoff `query` 为开发者自行 `encodeURIComponent` 拼接的**原始字符串**，接力页需自行 `decodeURIComponent` 后使用（见 `utils/query.js`）。

@@ -1,10 +1,11 @@
 // 接力页：饮品详情 + 选规格
 // 小微 AI Handoff 入口（selectDrink）：
-//   - onLoad(query) 接收 string query 解析后的对象（drinkId）
+//   - 解析 handoff 原始 query 字符串（drinkId，decodeURIComponent 后使用）
 //   - 可选从 wx.onAgentHandoff 缓存按 pageId 取 payload（预置 drink 详情）加速首屏
 //   - 进入小程序后用普通 navigateTo 完成后续（加入订单 -> checkout 结算页）
 // 普通分包可直接引用主包公共数据，无需在分包内再冗余一份 seed
 const { buildCatalog } = require('../../data/seed.js')
+const { resolvePageQuery } = require('../../utils/query.js')
 
 const CATALOG_VERSION = 3
 
@@ -83,22 +84,22 @@ Page({
     const nb = calcNavBack()
     this.setData({ headerPaddingTop: calcHeaderPaddingTop(), navBackTop: nb.top, navBackSize: nb.size })
 
-    // 1) 解析 handoff query（drinkId）
-    let drinkId = query && query.drinkId ? Number(query.drinkId) : 0
-
-    // 2) 取 wx.onAgentHandoff 缓存 payload（预置详情，可加速首屏）
+    // 1) 取 wx.onAgentHandoff 缓存 payload（预置详情，可加速首屏）
+    let handoff = null
     let payload = null
     try {
       const app = getApp()
       if (app && app.takeAgentHandoff) {
-        const handoff = app.takeAgentHandoff(this.getPageId())
+        handoff = app.takeAgentHandoff(this.getPageId())
         payload = handoff && handoff.payload
-        if (handoff) {
-          console.log('[sku-picker] handoff', handoff)
-          if (!drinkId && payload && payload.drinkId) drinkId = Number(payload.drinkId)
-        }
+        if (handoff) console.log('[sku-picker] handoff', handoff)
       }
     } catch (e) {}
+
+    // 2) 解析 query（drinkId）：handoff 原始 query 需 decodeURIComponent 后使用
+    const params = resolvePageQuery(query, handoff)
+    let drinkId = params.drinkId ? Number(params.drinkId) : 0
+    if (!drinkId && payload && payload.drinkId) drinkId = Number(payload.drinkId)
 
     if (!drinkId) {
       try { drinkId = Number(wx.getStorageSync('current_sku_drink_id')) || 0 } catch (e) {}
